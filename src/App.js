@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Navbar,
   Logo,
@@ -7,6 +7,11 @@ import {
 } from "./components/navbar/Navbar";
 import { SearchMovies } from "./components/searchMovies/SearchMovies";
 import { WatchedMovies } from "./components/watchedMovies/WatchedMovies";
+import Box from "./components/reusables/Box";
+import ErrorMessage from "./components/reusables/ErrorMessage";
+import MovieDetails from "./components/movieDetails/MovieDetails";
+const APIKey = "368fbc88";
+// const query = "fgsadf";
 
 const tempMovieData = [
   {
@@ -56,8 +61,61 @@ const tempWatchedData = [
 ];
 
 export default function App() {
-  const [movies, setMovies] = useState(tempMovieData);
+  const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
   const [query, setQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [selectedID, setSelectedID] = useState(null);
+  // test
+  const [userRating, setUserRating] = useState(null);
+
+  // useEffect(() => {
+  //   fetch(BASE_URL)
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setMovies(data);
+  //       console.log(data);
+  //     });
+  //     return () => console.log('cleanup function');
+  // }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const res = await fetch(
+          `http://www.omdbapi.com/?apikey=${APIKey}&s=${query}`
+        );
+        if (!res.ok)
+          throw new Error("Something went wrong with fetching movies");
+
+        const data = await res.json();
+        if (data.Response === "False") throw new Error("Movie not found");
+        setMovies(data.Search);
+
+        setIsLoading(false);
+      } catch (err) {
+        console.error(err.message);
+        setError(err.message);
+      }
+    };
+    if (query.length < 3) {
+      setMovies([]);
+      setError("");
+      return;
+    }
+    fetchData();
+    return () => setError("");
+  }, [query]);
+
+  const handleAddWatched = (newMovie) => {
+    setWatched([...watched, newMovie]);
+  };
+
+  const handleDeleteWatched = (id) => {
+    setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
+  };
 
   return (
     <>
@@ -66,17 +124,81 @@ export default function App() {
         <SearchInput query={query} setQuery={setQuery} />
         <ResultsNum movies={movies} />
       </Navbar>
-      <Main movies={movies} />
+      <Main movies={movies}>
+        {/* error and loading handling logic */}
+        {error ? (
+          <>
+            {" "}
+            <Box>
+              <ErrorMessage message={error} />
+            </Box>
+            <Box>
+              {" "}
+              <WatchedMovies watched={watched} />
+            </Box>
+          </>
+        ) : isLoading ? (
+          <>
+            {" "}
+            <Box>
+              {" "}
+              <Loader />
+            </Box>
+            <Box>
+              {" "}
+              <WatchedMovies watched={watched} />
+            </Box>
+          </>
+        ) : (
+          <>
+            {" "}
+            <Box>
+              {" "}
+              <SearchMovies
+                selectedID={selectedID}
+                setSelectedID={setSelectedID}
+                movies={movies}
+              />
+            </Box>
+            {selectedID ? (
+              <Box>
+                {" "}
+                <MovieDetails
+                  selectedID={selectedID}
+                  setSelectedID={setSelectedID}
+                  watched={watched}
+                  setWatched={setWatched}
+                  onAddWatched={handleAddWatched}
+                  onDeleteWatched={handleDeleteWatched}
+                />
+              </Box>
+            ) : (
+              <Box>
+                {" "}
+                {/* //! */}
+                <WatchedMovies
+                  selectedID={selectedID}
+                  onAddWatched={handleAddWatched}
+                  onDeleteWatched={handleDeleteWatched}
+                  watched={watched}
+                />
+              </Box>
+            )}
+          </>
+        )}
+      </Main>
     </>
   );
 }
 
-export const Main = ({ movies }) => {
+export const Main = ({ children }) => {
+  return <main className="main"> {children}</main>;
+};
+
+export const Loader = () => {
   return (
-    <main className="main">
-      {" "}
-      <SearchMovies movies={movies} />
-      <WatchedMovies movies={tempWatchedData} />
-    </main>
+    <>
+      <span className="loader">loading...</span>
+    </>
   );
 };

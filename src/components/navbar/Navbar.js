@@ -18,7 +18,15 @@ export const SearchInput = ({ query, setQuery }) => {
       type="text"
       placeholder="Search movies..."
       value={query}
-      onChange={(e) => setQuery(e.target.value)}
+      onChange={(e) => {
+        setQuery(e.target.value);
+        // I used to wonder why I could never get the query to log the current value
+        // but this is bc the state change won't be shown until after the event finishees
+        // same reason for why you must have count => count + 2 to change the state instead of
+        // setCount(count + 1)
+        // setCount(count + 1)
+      
+      } }
     />
   );
 };
