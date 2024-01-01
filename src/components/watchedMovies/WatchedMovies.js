@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faMinus } from "@fortawesome/free-solid-svg-icons";
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
@@ -12,10 +12,8 @@ export const WatchedMovies = ({
 }) => {
   const [isOpen2, setIsOpen2] = useState(true);
 
-  const avgImdbRating =
-    Math.round(average(watched?.map((movie) => movie.imdbRating)) * 100) / 100;
-  const avgUserRating =
-    Math.round(average(watched?.map((movie) => movie.userRating)) * 100) / 100;
+  const avgImdbRating = average(watched?.map((movie) => movie.imdbRating));
+  const avgUserRating = average(watched?.map((movie) => movie.userRating));
 
   const avgRuntime = average(watched?.map((movie) => movie.runtime));
 
@@ -78,17 +76,17 @@ export const WatchedMovies = ({
                 <span>⭐️</span>
                 {/* imdbRating */}
 
-                <span>{avgImdbRating}</span>
+                <span>{avgImdbRating.toFixed(2)}</span>
               </p>
               <p>
                 <span>🌟</span>
                 {/* user rating */}
-                <span>{avgUserRating}</span>
+                <span>{avgUserRating.toFixed(2)}</span>
               </p>
               <p>
                 <span>⏳</span>
                 {/*  */}
-                <span>{avgRuntime} min</span>
+                <span>{avgRuntime.toFixed(2)} min</span>
               </p>
             </div>
           </div>
@@ -139,10 +137,13 @@ export const WatchedMovie = ({
           <span>⏳</span>
           <span>{movie.runtime} min</span>
         </p>
-        <FontAwesomeIcon
+
+        <button
           onClick={() => onDeleteWatched(movie.imdbID)}
-          icon={faTrash}
-        />
+          className="btn-delete"
+        >
+          <FontAwesomeIcon size="xl" color="#fff" icon={faMinus} />
+        </button>
       </div>
     </li>
   );

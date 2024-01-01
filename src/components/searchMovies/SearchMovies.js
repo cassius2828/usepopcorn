@@ -18,8 +18,7 @@ const [movieDetails, setMovieDetails] = useState([])
          );
          const data = await res.json();
          setMovieDetails(data)
-     
-       
+
        } catch (err) {
          console.log(err);
        }
@@ -75,8 +74,14 @@ export const SearchedMovie = ({ movie, index, selectedID, setSelectedID }) => {
 
   return (
     <li
+    // this event will bring up the details of the selected movie and change the 
+    // document title to the movie title that was clicked
       onClick={() =>
-        setSelectedID(movie.imdbID === selectedID ? null : movie.imdbID)
+        {
+          setSelectedID(movie.imdbID === selectedID ? null : movie.imdbID);
+          document.title = `Movie | ${movie.Title}`;
+        }
+        
       }
       id={movie.Title + index}
     >

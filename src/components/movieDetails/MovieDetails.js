@@ -9,7 +9,7 @@ const MovieDetails = ({
   setWatched,
   watched,
   onAddWatched,
-
+  onCloseMovie
 }) => {
   const [movie, setMovie] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -30,9 +30,9 @@ const MovieDetails = ({
     Genre: genre,
   } = movie;
 
-  const onCloseMovie = () => {
-    setSelectedID(null);
-  };
+  // const onCloseMovie = () => {
+  //   setSelectedID(null);
+  // };
   const hanldeAdd = () => {
     //      if (watched.filter((item) => item.id === selectedID)) {
     // console.log('same id')
@@ -52,8 +52,6 @@ const MovieDetails = ({
     else onAddWatched(newWatchedMovie);
     onCloseMovie();
   };
-
-
 
   // movie details fetch
   useEffect(() => {
@@ -82,7 +80,13 @@ const MovieDetails = ({
         <>
           {" "}
           <header>
-            <button className="btn-back" onClick={() => setSelectedID(null)}>
+            <button
+              className="btn-back"
+              onClick={() => {
+                setSelectedID(null);
+                document.title = "usePopcorn";
+              }}
+            >
               &larr;
             </button>
 
