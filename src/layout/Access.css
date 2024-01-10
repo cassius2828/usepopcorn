@@ -1,0 +1,39 @@
+.access-container {
+  width: 100vw;
+  height: 100vh;
+  background-color: #7950f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.access-box {
+  width: 50vw;
+  /* height: 50vw; */
+  min-width: 20rem;
+  min-height: 20rem;
+  border: solid 2px black;
+}
+
+.sign-in-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 2rem;
+}
+
+.sign-in-container * {
+  margin: 2rem 0;
+}
+
+.sign-in-container input,
+.sign-in-container button {
+  width: 50%;
+  min-height: 3rem;
+}
+
+.route-link {
+  cursor: pointer;
+}
+
+/* REGISTER PAGE */

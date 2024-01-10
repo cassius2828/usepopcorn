@@ -10,6 +10,11 @@ import { WatchedMovies } from "./components/watchedMovies/WatchedMovies";
 import Box from "./components/reusables/Box";
 import ErrorMessage from "./components/reusables/ErrorMessage";
 import MovieDetails from "./components/movieDetails/MovieDetails";
+import AccessPage from "./layout/Access";
+import Home from "./layout/Home";
+import { SignIn } from "./layout/users/SignIn";
+import { Register } from "./layout/users/Register";
+import { SignOut } from "./layout/users/SignOut";
 
 const APIKey = "368fbc88";
 // const query = "fgsadf";
@@ -61,6 +66,11 @@ const tempWatchedData = [
   },
 ];
 
+const initialRouteState = {
+  route: "register",
+  signedIn: false,
+};
+
 export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
@@ -68,8 +78,59 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedID, setSelectedID] = useState(null);
+  const [user, setUser] = useState({
+    id: "",
+    username: "",
+    email: "",
+    joined: "",
+  });
+  const [route, setRoute] = useState(initialRouteState);
   // test
   const [userRating, setUserRating] = useState(null);
+
+  // //////////////////////
+  // backend actions
+  // //////////////////////
+
+  const hanldeSignIn = () => {
+    if (route === "signedout")
+      return setRoute({
+        route: "home",
+        signedIn: true,
+      });
+    else if (route === "register")
+      return setRoute({
+        route: "signedout",
+        signedIn: false,
+      });
+  };
+
+  const loadUser = (data) => {
+    setUser({
+      id: data.id,
+      username: data.username,
+      email: data.email,
+      joined: data.joined,
+    });
+  };
+
+  const signUp = (password, confirmPassword, username, email) => {
+    let emailValidation = /(?=.*@)(?=.*\.)/;
+    if (
+      password !== confirmPassword ||
+      !username ||
+      emailValidation.test(email) === false
+    ) {
+      return;
+    }
+    if (route.route === "register") {
+      return setRoute({ route: "home", signedIn: true });
+    }
+  };
+
+  const signOut = () => {
+    setRoute(initialRouteState);
+  };
 
   // useEffect(() => {
   //   fetch(BASE_URL)
@@ -82,7 +143,7 @@ export default function App() {
   // }, []);
 
   // ////////////////////////////
-   // ESCAPE KEY EFFECT
+  // ESCAPE KEY EFFECT
   // ////////////////////////////
   useEffect(() => {
     const callback = (e) => {
@@ -94,7 +155,9 @@ export default function App() {
     return () => document.removeEventListener("keydown", callback);
   }, []);
 
-  
+  // ////////////////////////////
+  // SEARCHING DATA
+  // ////////////////////////////
   useEffect(() => {
     const controller = new AbortController();
     const fetchData = async () => {
@@ -137,77 +200,100 @@ export default function App() {
   const onCloseMovie = () => {
     setSelectedID(null);
   };
+
+  const navigateToRegister = () => {
+    setRoute({ ...route, route: "register" });
+  };
+  const navigateToSignIn = () => {
+    setRoute({ ...route, route: "signedout" });
+  };
+
   return (
     <>
-      <Navbar movies={movies}>
-        <Logo setQuery={setQuery} setSelectedID={setSelectedID} />
-        <SearchInput query={query} setQuery={setQuery} />
-        <ResultsNum movies={movies} />
-      </Navbar>
-      <Main movies={movies}>
-        {/* error and loading handling logic */}
-        {error ? (
-          <>
+      {route.route === "home" ? (
+        <>
+          <Home>
             {" "}
-            <Box>
-              <ErrorMessage message={error} />
-            </Box>
-            <Box>
-              {" "}
-              <WatchedMovies watched={watched} />
-            </Box>
-          </>
-        ) : isLoading ? (
-          <>
-            {" "}
-            <Box>
-              {" "}
-              <Loader />
-            </Box>
-            <Box>
-              {" "}
-              <WatchedMovies watched={watched} />
-            </Box>
-          </>
-        ) : (
-          <>
-            {" "}
-            <Box>
-              {" "}
-              <SearchMovies
-                selectedID={selectedID}
-                setSelectedID={setSelectedID}
-                movies={movies}
-              />
-            </Box>
-            {selectedID ? (
-              <Box>
-                {" "}
-                <MovieDetails
-                  selectedID={selectedID}
-                  setSelectedID={setSelectedID}
-                  watched={watched}
-                  setWatched={setWatched}
-                  onAddWatched={handleAddWatched}
-                  onDeleteWatched={handleDeleteWatched}
-                  onCloseMovie={onCloseMovie}
-                />
-              </Box>
-            ) : (
-              <Box>
-                {" "}
-                {/* //! */}
-                <WatchedMovies
-                  selectedID={selectedID}
-                  onAddWatched={handleAddWatched}
-                  onDeleteWatched={handleDeleteWatched}
-                  watched={watched}
-                />
-              </Box>
-            )}
-          </>
-        )}
-      </Main>
+            <Navbar movies={movies}>
+              <Logo setQuery={setQuery} setSelectedID={setSelectedID} />
+              <SearchInput query={query} setQuery={setQuery} />
+              <ResultsNum movies={movies} />
+            </Navbar>
+            <Main movies={movies}>
+              {/* error and loading handling logic */}
+              {error ? (
+                <>
+                  {" "}
+                  <Box>
+                    <ErrorMessage message={error} />
+                  </Box>
+                  <Box>
+                    {" "}
+                    <WatchedMovies watched={watched} />
+                  </Box>
+                </>
+              ) : isLoading ? (
+                <>
+                  {" "}
+                  <Box>
+                    {" "}
+                    <Loader />
+                  </Box>
+                  <Box>
+                    {" "}
+                    <WatchedMovies watched={watched} />
+                  </Box>
+                </>
+              ) : (
+                <>
+                  {" "}
+                  <Box>
+                    {" "}
+                    <SearchMovies
+                      selectedID={selectedID}
+                      setSelectedID={setSelectedID}
+                      movies={movies}
+                    />
+                  </Box>
+                  {selectedID ? (
+                    <Box>
+                      {" "}
+                      <MovieDetails
+                        selectedID={selectedID}
+                        setSelectedID={setSelectedID}
+                        watched={watched}
+                        setWatched={setWatched}
+                        onAddWatched={handleAddWatched}
+                        onDeleteWatched={handleDeleteWatched}
+                        onCloseMovie={onCloseMovie}
+                      />
+                    </Box>
+                  ) : (
+                    <Box>
+                      {" "}
+                      {/* //! */}
+                      <WatchedMovies
+                        selectedID={selectedID}
+                        onAddWatched={handleAddWatched}
+                        onDeleteWatched={handleDeleteWatched}
+                        watched={watched}
+                      />
+                    </Box>
+                  )}
+                </>
+              )}
+            </Main>
+          </Home>
+        </>
+      ) : (
+        <AccessPage
+          onNavigateToSignIn={navigateToSignIn}
+          onNavigateToRegister={navigateToRegister}
+          route={route}
+          onSignUp={signUp}
+          onLoadUser={loadUser}
+        ></AccessPage>
+      )}
     </>
   );
 }
