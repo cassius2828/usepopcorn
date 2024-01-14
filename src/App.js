@@ -4,6 +4,7 @@ import {
   Logo,
   SearchInput,
   ResultsNum,
+  Welcome,
 } from "./components/navbar/Navbar";
 import { SearchMovies } from "./components/searchMovies/SearchMovies";
 import { WatchedMovies } from "./components/watchedMovies/WatchedMovies";
@@ -15,9 +16,6 @@ import Home from "./layout/Home";
 import { SignIn } from "./layout/users/SignIn";
 import { Register } from "./layout/users/Register";
 import { SignOut } from "./layout/users/SignOut";
-
-const APIKey = "368fbc88";
-// const query = "fgsadf";
 
 const tempMovieData = [
   {
@@ -67,8 +65,8 @@ const tempWatchedData = [
 ];
 
 const initialRouteState = {
-  route: "register",
-  signedIn: false,
+  route: "home",
+  signedIn: true,
 };
 
 export default function App() {
@@ -92,13 +90,13 @@ export default function App() {
   // backend actions
   // //////////////////////
 
-  const hanldeSignIn = () => {
-    if (route === "signedout")
+  const signIn = () => {
+    if (route.route === "signedout")
       return setRoute({
         route: "home",
         signedIn: true,
       });
-    else if (route === "register")
+    else if (route.route === "register")
       return setRoute({
         route: "signedout",
         signedIn: false,
@@ -132,15 +130,12 @@ export default function App() {
     setRoute(initialRouteState);
   };
 
-  // useEffect(() => {
-  //   fetch(BASE_URL)
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       setMovies(data);
-  //       console.log(data);
-  //     });
-  //     return () => console.log('cleanup function');
-  // }, []);
+  const navigateToRegister = () => {
+    setRoute({ ...route, route: "register" });
+  };
+  const navigateToSignIn = () => {
+    setRoute({ ...route, route: "signedout" });
+  };
 
   // ////////////////////////////
   // ESCAPE KEY EFFECT
@@ -164,10 +159,25 @@ export default function App() {
       try {
         setIsLoading(true);
         setError("");
+        const params = {
+          signal: controller.signal,
+          query: query,
+        };
+
+        const options = {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(params),
+        };
+
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${APIKey}&s=${query}`,
-          { signal: controller.signal }
+          `http://localhost:3000/search_movies`,
+          // `http://localhost:${process.env.PORT}/search_movies`,
+          options
         );
+
         if (!res.ok)
           throw new Error("Something went wrong with fetching movies");
 
@@ -186,6 +196,7 @@ export default function App() {
     }
     onCloseMovie();
     fetchData();
+
     return () => controller.abort();
   }, [query]);
 
@@ -201,13 +212,6 @@ export default function App() {
     setSelectedID(null);
   };
 
-  const navigateToRegister = () => {
-    setRoute({ ...route, route: "register" });
-  };
-  const navigateToSignIn = () => {
-    setRoute({ ...route, route: "signedout" });
-  };
-
   return (
     <>
       {route.route === "home" ? (
@@ -217,7 +221,11 @@ export default function App() {
             <Navbar movies={movies}>
               <Logo setQuery={setQuery} setSelectedID={setSelectedID} />
               <SearchInput query={query} setQuery={setQuery} />
-              <ResultsNum movies={movies} />
+              <div className="nav--results_signout__container">
+                <ResultsNum movies={movies} />
+                <SignOut handleSignOut={signOut} />
+              </div>
+              <Welcome username={user.username} />
             </Navbar>
             <Main movies={movies}>
               {/* error and loading handling logic */}
@@ -291,6 +299,7 @@ export default function App() {
           onNavigateToRegister={navigateToRegister}
           route={route}
           onSignUp={signUp}
+          onSignIn={signIn}
           onLoadUser={loadUser}
         ></AccessPage>
       )}

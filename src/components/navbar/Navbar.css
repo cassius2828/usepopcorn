@@ -1,0 +1,35 @@
+.nav-bar {
+    position: relative;
+  display: flex;
+  justify-content: space-between;
+}
+.nav--results_signout__container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 20%;
+}
+.sign-out,
+.sign-out:hover {
+  transition: 0.2s ease;
+  border-radius: 4px;
+  padding: 1rem;
+}
+.sign-out {
+  font-size: 1.5rem;
+}
+
+.sign-out:hover {
+  background-color: whitesmoke;
+  color: #6741d9;
+
+  cursor: pointer;
+}
+
+.nav--welcome-user {
+    position: absolute;
+    top: 10%;
+    right: 5%;
+    font-size: 1.25rem;
+}

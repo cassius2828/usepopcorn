@@ -1,7 +1,9 @@
-import React from 'react'
+import React from "react";
 
-export const SignOut = () => {
+export const SignOut = ({ handleSignOut }) => {
   return (
-    <div>SignOut</div>
-  )
-}
+    <div className="sign-out">
+      <span onClick={handleSignOut}>Sign Out</span>
+    </div>
+  );
+};

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 
 
-const APIKey = "368fbc88";
+const API_KEY = process.env.REACT_APP_API_KEY;
 const test = 'dora'
 
 export const SearchMovies = ({ movies, selectedID, setSelectedID }) => {
@@ -14,7 +14,7 @@ const [movieDetails, setMovieDetails] = useState([])
      const loadMovieDetails = async () => {
        try {
          const res = await fetch(
-           `http://www.omdbapi.com/?apikey=${APIKey}&s=${test}`
+           `http://www.omdbapi.com/?apikey=${API_KEY}&s=${test}`
          );
          const data = await res.json();
          setMovieDetails(data)

@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
+// import dotenv from 'dotenv';
 import { StarRating } from "./components/reusables/StarRating";
-
+// dotenv.config();
 export const Test = () => {
   const [movieRating, setMovieRating] = useState(null);
   return (

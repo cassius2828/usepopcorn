@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { StarRating } from "../reusables/StarRating";
 import { Loader } from "../../App";
-const APIKey = "368fbc88";
+const API_KEY = process.env.REACT_APP_API_KEY;
+
 
 const MovieDetails = ({
   selectedID,
@@ -9,11 +10,12 @@ const MovieDetails = ({
   setWatched,
   watched,
   onAddWatched,
-  onCloseMovie
+  onCloseMovie,
 }) => {
   const [movie, setMovie] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [userRating, setUserRating] = useState("");
+  const countRef = useRef(0);
 
   const isWatched = watched.map((item) => item.imdbID).includes(selectedID);
 
@@ -45,6 +47,7 @@ const MovieDetails = ({
       imdbRating: Number(imdbRating),
       runtime: Number(runtime.split(" ").at(0)),
       userRating,
+      countRatingDecisions: countRef.current,
     };
     // this prevents user from adding same movie twice, BUT does not allow a revision of rating yet
 
@@ -60,7 +63,7 @@ const MovieDetails = ({
         setIsLoading(true);
 
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${APIKey}&i=${selectedID}`
+          `http://www.omdbapi.com/?apikey=${API_KEY}&i=${selectedID}`
         );
         const data = await res.json();
         setMovie(data);
@@ -71,6 +74,10 @@ const MovieDetails = ({
     };
     loadMovieDetails();
   }, [selectedID]);
+
+  useEffect(() => {
+    if (userRating) countRef.current++;
+  }, [userRating]);
 
   return (
     <div className="details">

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+const PORT = process.env.REACT_APP_PORT;
 
 export const Register = ({
   handleNavigateToSignIn,
@@ -17,17 +18,21 @@ export const Register = ({
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const onSubmitRegister = () => {
-    fetch("http://localhost:3000/register", {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: user.username,
-        email: user.email,
-        password: password,
-      }),
-    })
+    fetch(
+      // `http://localhost:3001/register`,
+      `http://localhost:${PORT}/register`,
+      {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: user.username,
+          email: user.email,
+          password: password,
+        }),
+      }
+    )
       .then((res) => res.json())
       .then((user) => {
         if (user.id) {
@@ -38,7 +43,7 @@ export const Register = ({
   };
 
   return (
-    <div className="sign-in-container">
+    <div className="sign-in--container">
       <input
         onChange={(e) => setUser({ ...user, username: e.target.value })}
         placeholder="username"
