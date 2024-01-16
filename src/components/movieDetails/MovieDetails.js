@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { StarRating } from "../reusables/StarRating";
 import { Loader } from "../../App";
-const API_KEY = process.env.REACT_APP_API_KEY;
 
+const SERVER_PORT = process.env.REACT_APP_SERVER_PORT;
 
 const MovieDetails = ({
   selectedID,
@@ -62,9 +62,23 @@ const MovieDetails = ({
       try {
         setIsLoading(true);
 
+        const params = {
+          selectedID: selectedID,
+        };
+
+        const options = {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(params),
+        };
+
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${API_KEY}&i=${selectedID}`
+          `http://localhost:${SERVER_PORT}/movie_details`,
+          options
         );
+
         const data = await res.json();
         setMovie(data);
         setIsLoading(false);

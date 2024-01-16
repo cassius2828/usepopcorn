@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus } from "@fortawesome/free-solid-svg-icons";
+const SERVER_PORT = process.env.REACT_APP_SERVER_PORT;
+
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
 export const WatchedMovies = ({
   watched,
+  username,
   selectedID,
   onAddWatched,
   onDeleteWatched,
@@ -94,6 +97,7 @@ export const WatchedMovies = ({
           <ul className="list list-watched list-movies">
             {watched.map((movie, index) => (
               <WatchedMovie
+                username={username}
                 onDeleteWatched={onDeleteWatched}
                 userRating={movie.userRating}
                 key={movie.imdbID}
@@ -114,7 +118,29 @@ export const WatchedMovie = ({
   index,
   selectedID,
   setSelectedID,
+  username,
 }) => {
+  console.log(username)
+  const deleteWatchedDB = async () => {
+    const params = {
+      imdb_id: movie.imdbID,
+      username: username,
+    };
+    const options = {
+      method: "delete",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(params),
+    };
+    const response = await fetch(
+      `http://localhost:${SERVER_PORT}/remove_watched_movie`,
+      options
+    );
+    const data = response.json();
+    console.log(data);
+  };
+
   return (
     <li
     // onClick={() =>
@@ -139,7 +165,10 @@ export const WatchedMovie = ({
         </p>
 
         <button
-          onClick={() => onDeleteWatched(movie.imdbID)}
+          onClick={() => {
+            onDeleteWatched(movie.imdbID);
+            deleteWatchedDB();
+          }}
           className="btn-delete"
         >
           <FontAwesomeIcon size="xl" color="#fff" icon={faMinus} />

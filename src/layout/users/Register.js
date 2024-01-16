@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-const PORT = process.env.REACT_APP_PORT;
+const SERVER_PORT = process.env.REACT_APP_SERVER_PORT;
+
 
 export const Register = ({
   handleNavigateToSignIn,
@@ -20,7 +21,7 @@ export const Register = ({
   const onSubmitRegister = () => {
     fetch(
       // `http://localhost:3001/register`,
-      `http://localhost:${PORT}/register`,
+      `http://localhost:${SERVER_PORT}/register`,
       {
         method: "post",
         headers: {

@@ -2,44 +2,24 @@ import React, { useEffect, useState } from "react";
 
 
 
-const API_KEY = process.env.REACT_APP_API_KEY;
-const test = 'dora'
-
 export const SearchMovies = ({ movies, selectedID, setSelectedID }) => {
-const [movieDetails, setMovieDetails] = useState([])
+  const [movieDetails, setMovieDetails] = useState([]);
   const [isOpen1, setIsOpen1] = useState(true);
- 
-
-   useEffect(() => {
-     const loadMovieDetails = async () => {
-       try {
-         const res = await fetch(
-           `http://www.omdbapi.com/?apikey=${API_KEY}&s=${test}`
-         );
-         const data = await res.json();
-         setMovieDetails(data)
-
-       } catch (err) {
-         console.log(err);
-       }
-     };
-     loadMovieDetails();
-   }, [movies]);
-  
 
 
- const {
-   Title: title,
-   Year: year,
-   Poster: poster,
-   Runtime: runtime,
-   imdbRating,
-   Plot: plot,
-   Released: released,
-   Actors: actors,
-   Director: director,
-   Genre: genre,
- } = movieDetails;
+
+  const {
+    Title: title,
+    Year: year,
+    Poster: poster,
+    Runtime: runtime,
+    imdbRating,
+    Plot: plot,
+    Released: released,
+    Actors: actors,
+    Director: director,
+    Genre: genre,
+  } = movieDetails;
   return (
     <>
       <button
@@ -51,11 +31,12 @@ const [movieDetails, setMovieDetails] = useState([])
       {isOpen1 && (
         <ul className="list list-movies">
           {movies?.map((movie, index) => (
+            
             <SearchedMovie
-            imdbRating={imdbRating}
-            runtime={runtime}
-            // userRating={userRating}
-            selectedID={selectedID}
+              imdbRating={imdbRating}
+              runtime={runtime}
+              // userRating={userRating}
+              selectedID={selectedID}
               setSelectedID={setSelectedID}
               key={movie.imdbID}
               index={index}
@@ -68,21 +49,15 @@ const [movieDetails, setMovieDetails] = useState([])
   );
 };
 
-
 export const SearchedMovie = ({ movie, index, selectedID, setSelectedID }) => {
-
-
   return (
     <li
-    // this event will bring up the details of the selected movie and change the 
-    // document title to the movie title that was clicked
-      onClick={() =>
-        {
-          setSelectedID(movie.imdbID === selectedID ? null : movie.imdbID);
-          document.title = `Movie | ${movie.Title}`;
-        }
-        
-      }
+      // this event will bring up the details of the selected movie and change the
+      // document title to the movie title that was clicked
+      onClick={() => {
+        setSelectedID(movie.imdbID === selectedID ? null : movie.imdbID);
+        document.title = `Movie | ${movie.Title}`;
+      }}
       id={movie.Title + index}
     >
       <img src={movie.Poster} alt={`${movie.Title} poster`} />

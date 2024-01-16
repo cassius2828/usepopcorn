@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./Navbar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+
 export const Navbar = ({ children }) => {
   return <nav className="nav-bar">{children}</nav>;
 };

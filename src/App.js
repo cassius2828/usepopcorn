@@ -65,9 +65,11 @@ const tempWatchedData = [
 ];
 
 const initialRouteState = {
-  route: "home",
-  signedIn: true,
+  route: "signedout",
+  signedIn: false,
 };
+
+const SERVER_PORT = process.env.REACT_APP_SERVER_PORT;
 
 export default function App() {
   const [movies, setMovies] = useState([]);
@@ -85,6 +87,7 @@ export default function App() {
   const [route, setRoute] = useState(initialRouteState);
   // test
   const [userRating, setUserRating] = useState(null);
+  console.log(watched);
 
   // //////////////////////
   // backend actions
@@ -137,6 +140,10 @@ export default function App() {
     setRoute({ ...route, route: "signedout" });
   };
 
+  // //////////////////////
+  // backend actions
+  // //////////////////////
+
   // ////////////////////////////
   // ESCAPE KEY EFFECT
   // ////////////////////////////
@@ -149,6 +156,36 @@ export default function App() {
     document.addEventListener("keydown", callback);
     return () => document.removeEventListener("keydown", callback);
   }, []);
+
+  // ////////////////////////////
+  // RETRIEVE WATCHED DATA
+  // ////////////////////////////
+  useEffect(() => {
+    if (route.signedIn) {
+      const fetchWatchedMovies = async () => {
+        const params = {
+          username: user.username,
+        };
+        const options = {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(params),
+        };
+        const response = await fetch(
+          `http://localhost:${SERVER_PORT}/display_watched_movies`,
+          options
+        );
+        const data = response.json();
+        data.then((list) => {
+          console.log(list)
+        })
+        // setWatched([...watched, data])
+      };
+      fetchWatchedMovies();
+    }
+  }, [watched]);
 
   // ////////////////////////////
   // SEARCHING DATA
@@ -202,6 +239,30 @@ export default function App() {
 
   const handleAddWatched = (newMovie) => {
     setWatched([...watched, newMovie]);
+  
+    const addWatchedToDB = async () => {
+      const params = {
+        imdb_id: newMovie.imdbID,
+        title: newMovie.title,
+        user_rating: newMovie.userRating,
+        username: user.username,
+      };
+      const options = {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      };
+
+      const response = await fetch(
+        `http://localhost:${SERVER_PORT}/add_watched_movie`,
+        options
+      );
+      const data = await response.json();
+      // console.log(data);
+    };
+    addWatchedToDB();
   };
 
   const handleDeleteWatched = (id) => {
@@ -237,7 +298,7 @@ export default function App() {
                   </Box>
                   <Box>
                     {" "}
-                    <WatchedMovies watched={watched} />
+                    <WatchedMovies username={user.username} watched={watched} />
                   </Box>
                 </>
               ) : isLoading ? (
@@ -249,7 +310,7 @@ export default function App() {
                   </Box>
                   <Box>
                     {" "}
-                    <WatchedMovies watched={watched} />
+                    <WatchedMovies username={user.username} watched={watched} />
                   </Box>
                 </>
               ) : (
@@ -285,6 +346,7 @@ export default function App() {
                         onAddWatched={handleAddWatched}
                         onDeleteWatched={handleDeleteWatched}
                         watched={watched}
+                        username={user.username}
                       />
                     </Box>
                   )}
