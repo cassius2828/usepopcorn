@@ -13,7 +13,7 @@ export const SearchMovies = ({ movies, selectedID, setSelectedID }) => {
     Year: year,
     Poster: poster,
     Runtime: runtime,
-    imdbRating,
+    imdb_id_rating: imdbRating,
     Plot: plot,
     Released: released,
     Actors: actors,
@@ -33,7 +33,7 @@ export const SearchMovies = ({ movies, selectedID, setSelectedID }) => {
           {movies?.map((movie, index) => (
             
             <SearchedMovie
-              imdbRating={imdbRating}
+              imdb_id_rating={movie.imdbRating}
               runtime={runtime}
               // userRating={userRating}
               selectedID={selectedID}
@@ -65,7 +65,7 @@ export const SearchedMovie = ({ movie, index, selectedID, setSelectedID }) => {
       <div>
         <p>
           <span>⭐️</span>
-          <span>{movie.imdbRating}</span>
+          <span>{movie.imdb_id_rating}</span>
         </p>
         <p>
           <span>🌟</span>

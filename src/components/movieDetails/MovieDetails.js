@@ -14,7 +14,7 @@ const MovieDetails = ({
 }) => {
   const [movie, setMovie] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [userRating, setUserRating] = useState("");
+  const [user_rating, setUser_Rating] = useState("");
   const countRef = useRef(0);
 
   const isWatched = watched.map((item) => item.imdbID).includes(selectedID);
@@ -24,7 +24,7 @@ const MovieDetails = ({
     Year: year,
     Poster: poster,
     Runtime: runtime,
-    imdbRating,
+    imdbRating: imdb_id_rating,
     Plot: plot,
     Released: released,
     Actors: actors,
@@ -40,13 +40,13 @@ const MovieDetails = ({
     // console.log('same id')
     //     }
     const newWatchedMovie = {
-      imdbID: selectedID,
+      imdb_id: selectedID,
       title,
       year,
       poster,
-      imdbRating: Number(imdbRating),
+      imdb_id_rating: Number(imdb_id_rating),
       runtime: Number(runtime.split(" ").at(0)),
-      userRating,
+      user_rating,
       countRatingDecisions: countRef.current,
     };
     // this prevents user from adding same movie twice, BUT does not allow a revision of rating yet
@@ -90,8 +90,8 @@ const MovieDetails = ({
   }, [selectedID]);
 
   useEffect(() => {
-    if (userRating) countRef.current++;
-  }, [userRating]);
+    if (user_rating) countRef.current++;
+  }, [user_rating]);
 
   return (
     <div className="details">
@@ -130,10 +130,10 @@ const MovieDetails = ({
                 fontSize={25}
                 starSize={30}
                 starGap={25}
-                onSetRating={setUserRating}
+                onSetRating={setUser_Rating}
               />
 
-              {userRating > 0 && (
+              {user_rating > 0 && (
                 <button
                   className="btn-add"
                   onClick={(movie) => hanldeAdd(movie)}

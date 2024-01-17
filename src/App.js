@@ -87,7 +87,6 @@ export default function App() {
   const [route, setRoute] = useState(initialRouteState);
   // test
   const [userRating, setUserRating] = useState(null);
-  console.log(watched);
 
   // //////////////////////
   // backend actions
@@ -179,14 +178,15 @@ export default function App() {
         );
         const data = response.json();
         data.then((list) => {
-          console.log(list)
-        })
-        // setWatched([...watched, data])
+          setWatched(list);
+        });
       };
       fetchWatchedMovies();
     }
-  }, [watched]);
-
+  }, [route.signedIn]);
+useEffect(() => {
+console.log(watched)
+},[route.signedIn])
   // ////////////////////////////
   // SEARCHING DATA
   // ////////////////////////////
@@ -239,13 +239,18 @@ export default function App() {
 
   const handleAddWatched = (newMovie) => {
     setWatched([...watched, newMovie]);
-  
+
     const addWatchedToDB = async () => {
       const params = {
-        imdb_id: newMovie.imdbID,
-        title: newMovie.title,
-        user_rating: newMovie.userRating,
         username: user.username,
+        imdb_id: newMovie.imdb_id,
+        imdb_id_rating: newMovie.imdb_rating,
+        poster: newMovie.poster,
+        runtime: newMovie.runtime,
+        title: newMovie.title,
+        user_rating: newMovie.user_rating,
+        year: newMovie.year,
+        time_added: new Date(),
       };
       const options = {
         method: "post",
@@ -266,7 +271,7 @@ export default function App() {
   };
 
   const handleDeleteWatched = (id) => {
-    setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
+    setWatched((watched) => watched.filter((movie) => movie.imdb_id !== id));
   };
 
   const onCloseMovie = () => {

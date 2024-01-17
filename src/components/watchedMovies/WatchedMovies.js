@@ -15,11 +15,11 @@ export const WatchedMovies = ({
 }) => {
   const [isOpen2, setIsOpen2] = useState(true);
 
-  const avgImdbRating = average(watched?.map((movie) => movie.imdbRating));
-  const avgUserRating = average(watched?.map((movie) => movie.userRating));
+  const avgImdbRating = average(watched?.map((movie) => movie.imdb_id_rating));
+  const avgUserRating = average(watched?.map((movie) => movie.user_rating));
 
   const avgRuntime = average(watched?.map((movie) => movie.runtime));
-
+// console.log(watched)
   /*
     {
     imdbID: "tt1375666",
@@ -99,8 +99,8 @@ export const WatchedMovies = ({
               <WatchedMovie
                 username={username}
                 onDeleteWatched={onDeleteWatched}
-                userRating={movie.userRating}
-                key={movie.imdbID}
+                // user_rating={movie.user_rating}
+                key={movie.imdb_id}
                 index={index}
                 movie={movie}
               />
@@ -120,10 +120,10 @@ export const WatchedMovie = ({
   setSelectedID,
   username,
 }) => {
-  console.log(username)
+
   const deleteWatchedDB = async () => {
     const params = {
-      imdb_id: movie.imdbID,
+      imdb_id: movie.imdb_id,
       username: username,
     };
     const options = {
@@ -138,8 +138,10 @@ export const WatchedMovie = ({
       options
     );
     const data = response.json();
-    console.log(data);
+    // console.log(data);
   };
+  console.log(movie)
+console.log('imdb_id_rating ' + movie.imdb_id_rating)
 
   return (
     <li
@@ -153,11 +155,11 @@ export const WatchedMovie = ({
       <div>
         <p>
           <span>⭐️</span>
-          <span>{movie.imdbRating}</span>
+          <span>{movie.imdb_id_rating}</span>
         </p>
         <p>
           <span>🌟</span>
-          <span>{movie.userRating}</span>
+          <span>{movie.user_rating}</span>
         </p>
         <p>
           <span>⏳</span>
@@ -166,7 +168,7 @@ export const WatchedMovie = ({
 
         <button
           onClick={() => {
-            onDeleteWatched(movie.imdbID);
+            onDeleteWatched(movie.imdb_id);
             deleteWatchedDB();
           }}
           className="btn-delete"
@@ -177,3 +179,46 @@ export const WatchedMovie = ({
     </li>
   );
 };
+
+/*
+{
+    "Title": "George of the Jungle",
+    "Year": "1997",
+    "Rated": "PG",
+    "Released": "16 Jul 1997",
+    "Runtime": "92 min",
+    "Genre": "Action, Adventure, Comedy",
+    "Director": "Sam Weisman",
+    "Writer": "Jay Ward, Dana Olsen, Audrey Wells",
+    "Actors": "Brendan Fraser, Leslie Mann, Thomas Haden Church",
+    "Plot": "A man raised in the jungle by apes falls in love with a wealthy American heiress.",
+    "Language": "English, Spanish",
+    "Country": "United States",
+    "Awards": "1 win & 3 nominations",
+    "Poster": "https://m.media-amazon.com/images/M/MV5BNTdiM2VjYjYtZjEwNS00ZWU5LWFkZGYtZGYxMDcwMzY1OTEzL2ltYWdlL2ltYWdlXkEyXkFqcGdeQXVyMTczNjQwOTY@._V1_SX300.jpg",
+    "Ratings": [
+        {
+            "Source": "Internet Movie Database",
+            "Value": "5.5/10"
+        },
+        {
+            "Source": "Rotten Tomatoes",
+            "Value": "55%"
+        },
+        {
+            "Source": "Metacritic",
+            "Value": "53/100"
+        }
+    ],
+    "Metascore": "53",
+    "imdbRating": "5.5",
+    "imdbVotes": "83,389",
+    "imdbID": "tt0119190",
+    "Type": "movie",
+    "DVD": "27 May 2016",
+    "BoxOffice": "$105,263,257",
+    "Production": "N/A",
+    "Website": "N/A",
+    "Response": "True"
+}
+*/
