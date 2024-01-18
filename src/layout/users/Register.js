@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 const SERVER_PORT = process.env.REACT_APP_SERVER_PORT;
-
 
 export const Register = ({
   handleNavigateToSignIn,
-  handleSetRoute,
-  route,
   handleLoadUser,
   handleSignUp,
 }) => {
@@ -19,20 +16,24 @@ export const Register = ({
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const onSubmitRegister = () => {
+    
+    const params = {
+      username: user.username,
+      email: user.email,
+      password: password,
+    };
+    const options = {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(params),
+    };
+
     fetch(
       // `http://localhost:3001/register`,
       `http://localhost:${SERVER_PORT}/register`,
-      {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: user.username,
-          email: user.email,
-          password: password,
-        }),
-      }
+      options
     )
       .then((res) => res.json())
       .then((user) => {

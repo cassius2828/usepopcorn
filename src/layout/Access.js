@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./Access.css";
 import { SignIn } from "./users/SignIn";
 import { Register } from "./users/Register";

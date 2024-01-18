@@ -7,7 +7,6 @@ const SERVER_PORT = process.env.REACT_APP_SERVER_PORT;
 const MovieDetails = ({
   selectedID,
   setSelectedID,
-  setWatched,
   watched,
   onAddWatched,
   onCloseMovie,
@@ -32,13 +31,10 @@ const MovieDetails = ({
     Genre: genre,
   } = movie;
 
-  // const onCloseMovie = () => {
-  //   setSelectedID(null);
-  // };
+  // //////////////////////////
+  // ADD MOVIE TO WATCHED LIST
+  // //////////////////////////
   const hanldeAdd = () => {
-    //      if (watched.filter((item) => item.id === selectedID)) {
-    // console.log('same id')
-    //     }
     const newWatchedMovie = {
       imdb_id: selectedID,
       title,
@@ -49,14 +45,16 @@ const MovieDetails = ({
       user_rating,
       countRatingDecisions: countRef.current,
     };
-    // this prevents user from adding same movie twice, BUT does not allow a revision of rating yet
 
+    // this prevents user from adding same movie twice, BUT does not allow a revision of rating yet
     if (isWatched) onCloseMovie();
     else onAddWatched(newWatchedMovie);
     onCloseMovie();
   };
 
-  // movie details fetch
+  // //////////////////
+  // FETCH MOVIE DETAILS
+  // //////////////////
   useEffect(() => {
     const loadMovieDetails = async () => {
       try {
@@ -89,6 +87,9 @@ const MovieDetails = ({
     loadMovieDetails();
   }, [selectedID]);
 
+  // //////////////////////////////////////////////////////////////////////////////////
+  // TRACK HOW MANY TIMES A USER RATED A MOVIE BEFORE ADDING IT TO THE WATCHED LIST
+  // //////////////////////////////////////////////////////////////////////////////////
   useEffect(() => {
     if (user_rating) countRef.current++;
   }, [user_rating]);
@@ -158,13 +159,3 @@ const MovieDetails = ({
 
 export default MovieDetails;
 
-/*
-PROBLEM:
-- separate sibling components, movieDetails sets its userRating from its child component StarRating
-- Watched Movies does not have access to the same state userRating
-- I need to sync these states
-- How can I keep the userRating state individualistic if I lifted state?
-- Why is the details from the api different for search vs id query?
-
-
-*/

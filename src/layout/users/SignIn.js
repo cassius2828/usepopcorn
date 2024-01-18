@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 const SERVER_PORT = process.env.REACT_APP_SERVER_PORT;
 
@@ -31,7 +31,6 @@ export const SignIn = ({
         if (user.id) {
           handleLoadUser(user);
           handleSignIn();
-          console.log(user);
         }
       })
       .catch((err) => console.log("wrong credentials entered"));

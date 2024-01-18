@@ -1,25 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-
-
 export const SearchMovies = ({ movies, selectedID, setSelectedID }) => {
   const [movieDetails, setMovieDetails] = useState([]);
   const [isOpen1, setIsOpen1] = useState(true);
 
-
-
-  const {
-    Title: title,
-    Year: year,
-    Poster: poster,
-    Runtime: runtime,
-    imdb_id_rating: imdbRating,
-    Plot: plot,
-    Released: released,
-    Actors: actors,
-    Director: director,
-    Genre: genre,
-  } = movieDetails;
+  const { Runtime: runtime } = movieDetails;
   return (
     <>
       <button
@@ -31,7 +16,6 @@ export const SearchMovies = ({ movies, selectedID, setSelectedID }) => {
       {isOpen1 && (
         <ul className="list list-movies">
           {movies?.map((movie, index) => (
-            
             <SearchedMovie
               imdb_id_rating={movie.imdbRating}
               runtime={runtime}
