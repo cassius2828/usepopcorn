@@ -196,7 +196,7 @@ export default function App() {
       const params = {
         username: user.username,
         imdb_id: newMovie.imdb_id,
-        imdb_id_rating: newMovie.imdb_rating,
+        imdb_id_rating: newMovie.imdb_id_rating,
         poster: newMovie.poster,
         runtime: newMovie.runtime,
         title: newMovie.title,
@@ -217,7 +217,7 @@ export default function App() {
         options
       );
       const data = await response.json();
-      // console.log(data);
+      console.log(data);
     };
     addWatchedToDB();
   };
@@ -237,7 +237,7 @@ export default function App() {
 
   return (
     <>
-    {/* //* Routing Logic */}
+      {/* //* Routing Logic */}
       {route.route === "home" ? (
         <>
           <Home>
@@ -262,6 +262,7 @@ export default function App() {
                   <Box>
                     {" "}
                     <WatchedMovies username={user.username} watched={watched} />
+                    <SortBy setWatched={setWatched} username={user.username} />
                   </Box>
                 </>
               ) : isLoading ? (
@@ -274,6 +275,7 @@ export default function App() {
                   <Box>
                     {" "}
                     <WatchedMovies username={user.username} watched={watched} />
+                    <SortBy setWatched={setWatched} username={user.username} />
                   </Box>
                 </>
               ) : (
@@ -301,17 +303,23 @@ export default function App() {
                       />
                     </Box>
                   ) : (
-                    <Box>
-                      {" "}
-                      {/* //! */}
-                      <WatchedMovies
-                        selectedID={selectedID}
-                        onAddWatched={handleAddWatched}
-                        onDeleteWatched={handleDeleteWatched}
-                        watched={watched}
+                    <>
+                      <Box>
+                        {" "}
+                        {/* //! */}
+                        <WatchedMovies
+                          selectedID={selectedID}
+                          onAddWatched={handleAddWatched}
+                          onDeleteWatched={handleDeleteWatched}
+                          watched={watched}
+                          username={user.username}
+                        />
+                      </Box>
+                      <SortBy
+                        setWatched={setWatched}
                         username={user.username}
                       />
-                    </Box>
+                    </>
                   )}
                 </>
               )}
@@ -341,5 +349,61 @@ export const Loader = () => {
     <>
       <span className="loader">loading...</span>
     </>
+  );
+};
+
+const SortBy = ({ username, setWatched }) => {
+  const [sortBy, setSortBy] = useState("oldest added");
+  const sortList = [
+    "oldest added",
+    "newest added",
+    "A - Z",
+    "Z - A",
+    "user rating",
+    "IMDB Rating",
+  ];
+  let url = `http://localhost:${SERVER_PORT}/sort_watched_movies`;
+
+  const sortWatchedMovies = () => {
+    const params = {
+      sortBy: sortBy,
+      username: username,
+    };
+    const options = {
+      method: "put",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(params),
+    };
+
+    fetch(url, options)
+      .then((res) => res.json())
+      .then((data) => setWatched(data));
+  };
+useEffect(() => {
+  sortWatchedMovies();
+},[sortBy])
+
+console.log(sortBy)
+  return (
+    <div className="sort-container">
+      <select
+        defaultValue={"oldest added"}
+        onChange={(e) => {
+          setSortBy(e.target.value);
+          
+        }}
+        className="sort-list"
+      >
+        {sortList.map((item, i) => {
+          return (
+            <option value={item} className="sort-item" key={"list item #" + i}>
+              {item}
+            </option>
+          );
+        })}
+      </select>
+    </div>
   );
 };

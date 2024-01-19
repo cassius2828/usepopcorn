@@ -13,6 +13,7 @@ export const WatchedMovies = ({ watched, username, onDeleteWatched }) => {
   const avgUserRating = average(watched?.map((movie) => movie.user_rating));
   const avgRuntime = average(watched?.map((movie) => movie.runtime));
 
+
   return (
     <>
       <button
@@ -89,10 +90,9 @@ export const WatchedMovie = ({ movie, onDeleteWatched, username }) => {
       options
     );
     const data = await response.json();
-    // console.log(data);
+
   };
-  console.log(movie);
-  console.log("imdb_id_rating " + movie.imdb_id_rating);
+
 
   return (
     <li>
@@ -125,3 +125,5 @@ export const WatchedMovie = ({ movie, onDeleteWatched, username }) => {
     </li>
   );
 };
+
+
