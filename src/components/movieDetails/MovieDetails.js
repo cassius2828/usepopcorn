@@ -46,6 +46,13 @@ const MovieDetails = ({
       countRatingDecisions: countRef.current,
     };
 
+    // this solves the sorting issue when a user rating of 10 was placed lower than any other digits
+    // this occured bc the values are strings so it is reading the first int seen as the rating
+    // ex: 9 > 1 even though what I am putting is 10
+    if (newWatchedMovie.user_rating < 10) {
+      newWatchedMovie.user_rating = "0" + newWatchedMovie.user_rating;
+    }
+
     // this prevents user from adding same movie twice, BUT does not allow a revision of rating yet
     if (isWatched) onCloseMovie();
     else onAddWatched(newWatchedMovie);

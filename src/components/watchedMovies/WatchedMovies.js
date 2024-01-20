@@ -93,7 +93,7 @@ export const WatchedMovie = ({ movie, onDeleteWatched, username }) => {
 
   };
 
-
+console.log(movie.user_rating)
   return (
     <li>
       <img src={movie.poster} alt={`${movie.title} poster`} />
@@ -105,7 +105,10 @@ export const WatchedMovie = ({ movie, onDeleteWatched, username }) => {
         </p>
         <p>
           <span>🌟</span>
-          <span>{movie.user_rating}</span>
+          {/* this logic removes the 0 from ratings. The zero was originally added so the DB can properly sort user rating
+          without "10" being placed as "1" due to the type being of string
+          */}
+          <span>{movie.user_rating < 10 ? movie.user_rating.split('').pop() : movie.user_rating}</span>
         </p>
         <p>
           <span>⏳</span>

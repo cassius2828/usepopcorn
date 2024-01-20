@@ -16,6 +16,7 @@ import MovieDetails from "./components/movieDetails/MovieDetails";
 
 import Box from "./components/reusables/Box";
 import ErrorMessage from "./components/reusables/ErrorMessage";
+import { useSearchMovies } from "./customHooks/useSearchMovies";
 
 const initialRouteState = {
   route: "signedout",
@@ -25,11 +26,9 @@ const initialRouteState = {
 const SERVER_PORT = process.env.REACT_APP_SERVER_PORT;
 
 export default function App() {
-  const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
   const [query, setQuery] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [watched, setWatched] = useState([]);
+
   const [selectedID, setSelectedID] = useState(null);
   const [user, setUser] = useState({
     id: "",
@@ -38,7 +37,16 @@ export default function App() {
     joined: "",
   });
   const [route, setRoute] = useState(initialRouteState);
-
+  // ////////////////////////////
+  // CLOSE MOVIE (UI)
+  // ////////////////////////////
+  const onCloseMovie = () => {
+    setSelectedID(null);
+  };
+  // ////////////////////////////
+  // SEARCH MOVIES: CUSTOM HOOK
+  // ////////////////////////////
+  const { movies, error, isLoading } = useSearchMovies(query, onCloseMovie);
   // //////////////////////
   // backend actions
   // //////////////////////
@@ -81,6 +89,7 @@ export default function App() {
 
   const signOut = () => {
     setRoute(initialRouteState);
+    setQuery('');
   };
 
   const navigateToRegister = () => {
@@ -139,52 +148,52 @@ export default function App() {
   // ////////////////////////////
   // SEARCHING DATA
   // ////////////////////////////
-  useEffect(() => {
-    const controller = new AbortController();
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        setError("");
-        const params = {
-          signal: controller.signal,
-          query: query,
-        };
+  // useEffect(() => {
+  //   const controller = new AbortController();
+  //   const fetchData = async () => {
+  //     try {
+  //       setIsLoading(true);
+  //       setError("");
+  //       const params = {
+  //         signal: controller.signal,
+  //         query: query,
+  //       };
 
-        const options = {
-          method: "post",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(params),
-        };
+  //       const options = {
+  //         method: "post",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(params),
+  //       };
 
-        const res = await fetch(
-          `http://localhost:3000/search_movies`,
-          // `http://localhost:${process.env.PORT}/search_movies`,
-          options
-        );
+  //       const res = await fetch(
+  //         `http://localhost:3000/search_movies`,
+  //         // `http://localhost:${process.env.PORT}/search_movies`,
+  //         options
+  //       );
 
-        if (!res.ok)
-          throw new Error("Something went wrong with fetching movies");
+  //       if (!res.ok)
+  //         throw new Error("Something went wrong with fetching movies");
 
-        const data = await res.json();
-        if (data.Response === "False") throw new Error("Movie not found");
-        setMovies(data.Search);
-        setIsLoading(false);
-      } catch (err) {
-        if (err.name !== "Abort Error") setError(err.message);
-      }
-    };
-    if (query.length < 3) {
-      setMovies([]);
-      setError("");
-      return;
-    }
-    onCloseMovie();
-    fetchData();
+  //       const data = await res.json();
+  //       if (data.Response === "False") throw new Error("Movie not found");
+  //       setMovies(data.Search);
+  //       setIsLoading(false);
+  //     } catch (err) {
+  //       if (err.name !== "Abort Error") setError(err.message);
+  //     }
+  //   };
+  //   if (query.length < 3) {
+  //     setMovies([]);
+  //     setError("");
+  //     return;
+  //   }
+  //   onCloseMovie();
+  //   fetchData();
 
-    return () => controller.abort();
-  }, [query]);
+  //   return () => controller.abort();
+  // }, [query]);
 
   // ////////////////////////////
   // ADDING MOVIE TO WATCHED LIST
@@ -217,7 +226,7 @@ export default function App() {
         options
       );
       const data = await response.json();
-      console.log(data);
+
     };
     addWatchedToDB();
   };
@@ -227,12 +236,6 @@ export default function App() {
   // ////////////////////////////
   const handleDeleteWatched = (id) => {
     setWatched((watched) => watched.filter((movie) => movie.imdb_id !== id));
-  };
-  // ////////////////////////////
-  // CLOSE MOVIE (UI)
-  // ////////////////////////////
-  const onCloseMovie = () => {
-    setSelectedID(null);
   };
 
   return (
@@ -381,18 +384,17 @@ const SortBy = ({ username, setWatched }) => {
       .then((res) => res.json())
       .then((data) => setWatched(data));
   };
-useEffect(() => {
-  sortWatchedMovies();
-},[sortBy])
+  useEffect(() => {
+    sortWatchedMovies();
+  }, [sortBy]);
 
-console.log(sortBy)
+
   return (
     <div className="sort-container">
       <select
         defaultValue={"oldest added"}
         onChange={(e) => {
           setSortBy(e.target.value);
-          
         }}
         className="sort-list"
       >

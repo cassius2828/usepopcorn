@@ -1,5 +1,10 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 
+// StarRating.propTypes = {
+//     maxRating: PropTypes.number,
+//     // if needed can add PropTypes to all other props
+// }
 
 export const StarRating = ({
   maxRating = 5,

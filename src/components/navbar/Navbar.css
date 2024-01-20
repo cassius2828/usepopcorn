@@ -1,5 +1,5 @@
 .nav-bar {
-    position: relative;
+  position: relative;
   display: flex;
   justify-content: space-between;
 }
@@ -11,25 +11,36 @@
   width: 20%;
 }
 .sign-out,
-.sign-out:hover {
+.sign-out:hover,
+.find-friends,
+.find-friends:hover {
   transition: 0.2s ease;
   border-radius: 4px;
   padding: 1rem;
-}
-.sign-out {
   font-size: 1.5rem;
 }
 
-.sign-out:hover {
+.sign-out:hover,
+.find-friends:hover {
   background-color: whitesmoke;
   color: #6741d9;
 
   cursor: pointer;
 }
 
+.navigate-pages {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.find-friends {
+  margin-right: 1rem;
+}
+
 .nav--welcome-user {
-    position: absolute;
-    top: 10%;
-    right: 5%;
-    font-size: 1.25rem;
+  position: absolute;
+  top: 10%;
+  right: 5%;
+  font-size: 1.25rem;
 }
