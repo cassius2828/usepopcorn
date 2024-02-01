@@ -5,6 +5,7 @@ export const useSearchMovies = (query, func1) => {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  
   useEffect(() => {
     const controller = new AbortController();
     const fetchData = async () => {
@@ -46,7 +47,7 @@ export const useSearchMovies = (query, func1) => {
       return;
     }
     // func1 is the closeMovie function
-    func1();
+    func1?.();
     fetchData();
 
     return () => controller.abort();

@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import "./Navbar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { useKeypressListener } from "../../customHooks/useKeypressListener";
 
 export const Navbar = ({ children }) => {
   return <nav className="nav-bar">{children}</nav>;
@@ -10,22 +11,17 @@ export const Navbar = ({ children }) => {
 export const SearchInput = ({ query, setQuery }) => {
   const inputEl = useRef(null);
 
-  // ///////////////
-  // FOCUS SEARCH INPUT ON ENTER KEY
-  // ///////////////
-  useEffect(() => {
-    const callback = (e) => {
-      // if the input is already active then do nothing
-      if (document.activeElement === inputEl.current) return;
-      // otherwise, if we press enter key then focus the element and clear the search
-      if (e.code === "Enter") {
-        inputEl.current.focus();
-        setQuery("");
-      }
-    };
-    document.addEventListener("keydown", callback);
-    return () => document.removeEventListener("keydown", callback);
-  }, [setQuery]);
+  // ////////////////////////////////////////////
+  // FOCUS SEARCH INPUT ON ENTER KEY: CUSTOM HOOK
+  // ////////////////////////////////////////////
+  const action = () => {
+    if (document.activeElement === inputEl.current) return;
+    inputEl.current.focus();
+    setQuery("");
+  };
+
+  useKeypressListener("enter", action);
+
 
   return (
     <div className="search-container">

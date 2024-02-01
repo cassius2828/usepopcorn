@@ -16,7 +16,9 @@ import MovieDetails from "./components/movieDetails/MovieDetails";
 
 import Box from "./components/reusables/Box";
 import ErrorMessage from "./components/reusables/ErrorMessage";
+
 import { useSearchMovies } from "./customHooks/useSearchMovies";
+import { useKeypressListener } from "./customHooks/useKeypressListener";
 
 const initialRouteState = {
   route: "signedout",
@@ -38,17 +40,12 @@ export default function App() {
   });
   const [route, setRoute] = useState(initialRouteState);
   // ////////////////////////////
-  // CLOSE MOVIE (UI)
-  // ////////////////////////////
-  const onCloseMovie = () => {
-    setSelectedID(null);
-  };
-  // ////////////////////////////
   // SEARCH MOVIES: CUSTOM HOOK
   // ////////////////////////////
   const { movies, error, isLoading } = useSearchMovies(query, onCloseMovie);
+
   // //////////////////////
-  // backend actions
+  // ? backend actions
   // //////////////////////
 
   const signIn = () => {
@@ -89,7 +86,7 @@ export default function App() {
 
   const signOut = () => {
     setRoute(initialRouteState);
-    setQuery('');
+    setQuery("");
   };
 
   const navigateToRegister = () => {
@@ -100,21 +97,13 @@ export default function App() {
   };
 
   // //////////////////////
-  // backend actions
+  // ? backend actions
   // //////////////////////
 
   // ////////////////////////////
-  // ESCAPE KEY EFFECT
+  // ESCAPE KEY EFFECT: CUSTOM HOOK
   // ////////////////////////////
-  useEffect(() => {
-    const callback = (e) => {
-      if (e.code === "Escape") {
-        onCloseMovie();
-      }
-    };
-    document.addEventListener("keydown", callback);
-    return () => document.removeEventListener("keydown", callback);
-  }, []);
+  useKeypressListener("Escape", onCloseMovie);
 
   // ////////////////////////////
   // RETRIEVE WATCHED DATA
@@ -136,6 +125,8 @@ export default function App() {
           `http://localhost:${SERVER_PORT}/display_watched_movies`,
           options
         );
+        // missing await key word, but fetching still works?
+        // seems like it still works bc of promise after
         const data = response.json();
         data.then((list) => {
           setWatched(list);
@@ -146,54 +137,13 @@ export default function App() {
   }, [route.signedIn]);
 
   // ////////////////////////////
-  // SEARCHING DATA
+  // CLOSE MOVIE (UI)
+  // * Changed this to regular func delcaration bc then you can call the
+  // * custom hook BEFORE the arg func is delcared. This allows me to organize my code better
   // ////////////////////////////
-  // useEffect(() => {
-  //   const controller = new AbortController();
-  //   const fetchData = async () => {
-  //     try {
-  //       setIsLoading(true);
-  //       setError("");
-  //       const params = {
-  //         signal: controller.signal,
-  //         query: query,
-  //       };
-
-  //       const options = {
-  //         method: "post",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify(params),
-  //       };
-
-  //       const res = await fetch(
-  //         `http://localhost:3000/search_movies`,
-  //         // `http://localhost:${process.env.PORT}/search_movies`,
-  //         options
-  //       );
-
-  //       if (!res.ok)
-  //         throw new Error("Something went wrong with fetching movies");
-
-  //       const data = await res.json();
-  //       if (data.Response === "False") throw new Error("Movie not found");
-  //       setMovies(data.Search);
-  //       setIsLoading(false);
-  //     } catch (err) {
-  //       if (err.name !== "Abort Error") setError(err.message);
-  //     }
-  //   };
-  //   if (query.length < 3) {
-  //     setMovies([]);
-  //     setError("");
-  //     return;
-  //   }
-  //   onCloseMovie();
-  //   fetchData();
-
-  //   return () => controller.abort();
-  // }, [query]);
+  function onCloseMovie() {
+    setSelectedID(null);
+  }
 
   // ////////////////////////////
   // ADDING MOVIE TO WATCHED LIST
@@ -226,7 +176,6 @@ export default function App() {
         options
       );
       const data = await response.json();
-
     };
     addWatchedToDB();
   };
@@ -387,7 +336,6 @@ const SortBy = ({ username, setWatched }) => {
   useEffect(() => {
     sortWatchedMovies();
   }, [sortBy]);
-
 
   return (
     <div className="sort-container">
