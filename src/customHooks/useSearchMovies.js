@@ -51,6 +51,6 @@ export const useSearchMovies = (query, func1) => {
     fetchData();
 
     return () => controller.abort();
-  }, [query]);
+  }, [query, func1]);
   return { movies, error, isLoading };
 };

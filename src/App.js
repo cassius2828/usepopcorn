@@ -134,7 +134,7 @@ export default function App() {
       };
       fetchWatchedMovies();
     }
-  }, [route.signedIn]);
+  }, [route.signedIn, user.username]);
 
   // ////////////////////////////
   // CLOSE MOVIE (UI)
@@ -176,6 +176,7 @@ export default function App() {
         options
       );
       const data = await response.json();
+      console.log(data)
     };
     addWatchedToDB();
   };
@@ -335,6 +336,7 @@ const SortBy = ({ username, setWatched }) => {
   };
   useEffect(() => {
     sortWatchedMovies();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy]);
 
   return (

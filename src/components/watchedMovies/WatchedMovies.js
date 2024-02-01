@@ -90,10 +90,11 @@ export const WatchedMovie = ({ movie, onDeleteWatched, username }) => {
       options
     );
     const data = await response.json();
+    console.log(data)
 
   };
 
-console.log(movie.user_rating)
+
   return (
     <li>
       <img src={movie.poster} alt={`${movie.title} poster`} />

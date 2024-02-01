@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable no-unused-vars */
+import React, {  useState } from "react";
 
 export const SearchMovies = ({ movies, selectedID, setSelectedID }) => {
   const [movieDetails, setMovieDetails] = useState([]);
