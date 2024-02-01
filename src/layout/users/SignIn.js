@@ -33,7 +33,7 @@ export const SignIn = ({
           handleSignIn();
         }
       })
-      .catch((err) => console.log("wrong credentials entered"));
+      .catch((err) => console.log("wrong credentials entered (front end)"));
   };
 
   return (

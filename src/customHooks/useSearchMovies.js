@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 const SERVER_PORT = process.env.REACT_APP_SERVER_PORT;
 
@@ -51,6 +52,6 @@ export const useSearchMovies = (query, func1) => {
     fetchData();
 
     return () => controller.abort();
-  }, [query, func1]);
+  }, [query]);
   return { movies, error, isLoading };
 };

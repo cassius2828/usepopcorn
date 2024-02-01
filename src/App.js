@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import AccessPage from "./layout/Access";
 import Home from "./layout/Home";
@@ -134,7 +135,7 @@ export default function App() {
       };
       fetchWatchedMovies();
     }
-  }, [route.signedIn, user.username]);
+  }, [route.signedIn]);
 
   // ////////////////////////////
   // CLOSE MOVIE (UI)
