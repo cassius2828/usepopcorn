@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-
-const SERVER_PORT = process.env.REACT_APP_SERVER_PORT;
+import { config } from "../../config";
+const BASE_URL = config.url;
+// const SERVER_PORT = process.env.REACT_APP_SERVER_PORT;
 
 export const SignIn = ({
   handleNavigateToRegister,
@@ -15,7 +16,7 @@ export const SignIn = ({
   const onSubmitSignIn = () => {
     fetch(
       // `http://localhost:3001/signin`,
-      `http://localhost:${SERVER_PORT}/signin`,
+      `${BASE_URL}/signin`,
       {
         method: "post",
         headers: { "Content-type": "application/json" },

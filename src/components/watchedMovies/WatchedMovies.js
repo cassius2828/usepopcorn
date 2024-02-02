@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus } from "@fortawesome/free-solid-svg-icons";
-const SERVER_PORT = process.env.REACT_APP_SERVER_PORT;
+import { config } from "../../config";
+const BASE_URL = config.url;
+// const SERVER_PORT = process.env.REACT_APP_SERVER_PORT;
 
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
@@ -86,7 +88,7 @@ export const WatchedMovie = ({ movie, onDeleteWatched, username }) => {
       body: JSON.stringify(params),
     };
     const response = await fetch(
-      `http://localhost:${SERVER_PORT}/remove_watched_movie`,
+      `${BASE_URL}/remove_watched_movie`,
       options
     );
     const data = await response.json();

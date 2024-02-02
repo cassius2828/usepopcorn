@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-const SERVER_PORT = process.env.REACT_APP_SERVER_PORT;
+import { config } from "../config";
+const BASE_URL = config.url;
+// const SERVER_PORT = process.env.REACT_APP_SERVER_PORT;
 
 export const useSearchMovies = (query, func1) => {
   const [movies, setMovies] = useState([]);
@@ -27,7 +29,7 @@ export const useSearchMovies = (query, func1) => {
         };
 
         const res = await fetch(
-          `http://localhost:${SERVER_PORT}/search_movies`,
+          `${BASE_URL}/search_movies`,
           options
         );
 

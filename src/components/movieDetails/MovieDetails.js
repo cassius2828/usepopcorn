@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { StarRating } from "../reusables/StarRating";
 import { Loader } from "../../App";
+import { config } from "../../config";
+const BASE_URL = config.url;
 
-const SERVER_PORT = process.env.REACT_APP_SERVER_PORT;
+// const SERVER_PORT = process.env.REACT_APP_SERVER_PORT;
 
 const MovieDetails = ({
   selectedID,
@@ -80,7 +82,7 @@ const MovieDetails = ({
         };
 
         const res = await fetch(
-          `http://localhost:${SERVER_PORT}/movie_details`,
+          `${BASE_URL}/movie_details`,
           options
         );
 

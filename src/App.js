@@ -21,12 +21,16 @@ import ErrorMessage from "./components/reusables/ErrorMessage";
 import { useSearchMovies } from "./customHooks/useSearchMovies";
 import { useKeypressListener } from "./customHooks/useKeypressListener";
 
+import { config } from "./config";
+
 const initialRouteState = {
   route: "signedout",
   signedIn: false,
 };
 
-const SERVER_PORT = process.env.REACT_APP_SERVER_PORT;
+const BASE_URL = config.url
+
+// const SERVER_PORT = process.env.REACT_APP_SERVER_PORT;
 
 export default function App() {
   const [query, setQuery] = useState("");
@@ -123,7 +127,7 @@ export default function App() {
           body: JSON.stringify(params),
         };
         const response = await fetch(
-          `http://localhost:${SERVER_PORT}/display_watched_movies`,
+          `${BASE_URL}/display_watched_movies`,
           options
         );
         // missing await key word, but fetching still works?
@@ -173,7 +177,7 @@ export default function App() {
       };
 
       const response = await fetch(
-        `http://localhost:${SERVER_PORT}/add_watched_movie`,
+        `${BASE_URL}/add_watched_movie`,
         options
       );
       const data = await response.json();
@@ -316,7 +320,7 @@ const SortBy = ({ username, setWatched }) => {
     "user rating",
     "IMDB Rating",
   ];
-  let url = `http://localhost:${SERVER_PORT}/sort_watched_movies`;
+  let url = `${BASE_URL}/sort_watched_movies`;
 
   const sortWatchedMovies = () => {
     const params = {
